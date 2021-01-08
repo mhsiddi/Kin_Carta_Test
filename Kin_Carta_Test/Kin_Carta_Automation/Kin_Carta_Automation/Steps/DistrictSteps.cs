@@ -85,6 +85,7 @@ namespace Kin_Carta_Automation.Steps
         public void ThenTheReturnedMeasurementsOfBothPagesShouldNotRepeat()
         {
             response = client.Execute(request);
+
             var content = response.Content;
 
             var districts = JsonConvert.DeserializeObject<List<District>>(content);
@@ -106,6 +107,7 @@ namespace Kin_Carta_Automation.Steps
         public void ThenAnErrorCodeWithMessageIsReturned()
         {
             response = client.Execute(request);
+
             var content = response.Content;
 
             var error = JsonConvert.DeserializeObject<Error>(content);

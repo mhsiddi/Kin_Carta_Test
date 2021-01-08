@@ -28,12 +28,15 @@ namespace Kin_Carta_Automation.Steps
 
         #endregion
 
-        [Given(@"beach weather station sensor “(.*)”")]
+        #region "Steps" 
+
+        [Given(@"beach weather station sensor on '(.*)'")]
         public void GivenBeachWeatherStationSensorOakStreet(string station)
         {
             client = new RestClient(Url);
             request = new RestRequest("resource/k7hf-8y75.json", Method.GET);
             request.AddQueryParameter("station_name", station);
+
         }
 
         [When(@"the user requests station data")]
@@ -42,7 +45,7 @@ namespace Kin_Carta_Automation.Steps
             response = client.Execute(request);
         }
 
-        [Then(@"all data measuremeants correspond to only that station")]
+        [Then(@"all data measurements correspond to only that station")]
         public void ThenAllDataMeasuremeantsCorrespondToOnlyThatStation()
         {
             var content = response.Content;
@@ -53,5 +56,31 @@ namespace Kin_Carta_Automation.Steps
          
         }
 
+        [Given(@"data is from '(.*)'")]
+        public void GivenDataIsFrom(int year)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [When(@"the user requests data for the first (.*) measurements")]
+        public void WhenTheUserRequestsDataForTheFirstMeasurements(int p0)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [When(@"the second page of (.*) measurements")]
+        public void WhenTheSecondPageOfMeasurements(int p0)
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+        [Then(@"the returned measurements of both pages should not repeat")]
+        public void ThenTheReturnedMeasurementsOfBothPagesShouldNotRepeat()
+        {
+            ScenarioContext.Current.Pending();
+        }
+
+
+        #endregion
     }
 }

@@ -59,25 +59,36 @@ namespace Kin_Carta_Automation.Steps
         [Given(@"data is from '(.*)'")]
         public void GivenDataIsFrom(int year)
         {
-            ScenarioContext.Current.Pending();
+            string query = $"date_extract_y(measurement_timestamp)={year}";
+            request.AddQueryParameter("$where", query);
+
         }
 
         [When(@"the user requests data for the first (.*) measurements")]
-        public void WhenTheUserRequestsDataForTheFirstMeasurements(int p0)
+        public void WhenTheUserRequestsDataForTheFirstMeasurements(int measurement)
         {
-            ScenarioContext.Current.Pending();
+            request.AddQueryParameter("$offset", measurement.ToString());
+            
         }
 
         [When(@"the second page of (.*) measurements")]
-        public void WhenTheSecondPageOfMeasurements(int p0)
+        public void WhenTheSecondPageOfMeasurements(int measurement)
         {
-            ScenarioContext.Current.Pending();
+            request.AddQueryParameter("$limit", "20");
         }
 
         [Then(@"the returned measurements of both pages should not repeat")]
         public void ThenTheReturnedMeasurementsOfBothPagesShouldNotRepeat()
         {
-            ScenarioContext.Current.Pending();
+            response = client.Execute(request);
+            var content = response.Content;
+
+            var districts = JsonConvert.DeserializeObject<List<District>>(content);
+
+            int initalCount = districts.Count;
+            int uniqueCount = districts.Distinct().ToList().Count;
+
+            Assert.AreEqual(uniqueCount, initalCount);
         }
 
 

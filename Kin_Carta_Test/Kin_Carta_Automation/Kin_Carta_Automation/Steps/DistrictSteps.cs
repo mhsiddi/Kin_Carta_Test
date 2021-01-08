@@ -14,10 +14,13 @@ namespace Kin_Carta_Automation.Steps
     [Binding]
     public class DistrictSteps : BaseAPIStep
     {
+        #region "Properties"
+
         public RestClient client;
         public RestRequest request;
         public IRestResponse response;
 
+        #endregion
 
         #region "Constructor"
 
@@ -43,6 +46,8 @@ namespace Kin_Carta_Automation.Steps
         public void WhenTheUserRequestsStationData()
         {
             response = client.Execute(request);
+
+            Assert.IsTrue(response.IsSuccessful);
         }
 
         [Then(@"all data measurements correspond to only that station")]
@@ -53,7 +58,6 @@ namespace Kin_Carta_Automation.Steps
             var filtered = districts.Where(w => w.StationName == "Oak Street Weather Station").ToList();
 
             Assert.AreEqual(districts.Count, filtered.Count);
-         
         }
 
         [Given(@"data is from '(.*)'")]
@@ -91,6 +95,25 @@ namespace Kin_Carta_Automation.Steps
             Assert.AreEqual(uniqueCount, initalCount);
         }
 
+        [When(@"the user requests sensor data by querying battery_life values that are less than the text 'full'")]
+        public void WhenTheUserRequestsSensorDataByQueryingBattery_LifeValuesThatAreLessThanTheTextFullWhereBattery_LifeFull()
+        {
+            string query = $"battery_life < full";
+            request.AddQueryParameter("$where", query);
+        }
+
+        [Then(@"an error code 'malformed compiler' with message 'Could not parse SoQL query' is returned")]
+        public void ThenAnErrorCodeWithMessageIsReturned()
+        {
+            response = client.Execute(request);
+            var content = response.Content;
+
+            var error = JsonConvert.DeserializeObject<Error>(content);
+
+            Assert.IsTrue(error.Code.ToLower().Contains("malformed"));
+            Assert.IsTrue(error.Message.ToLower().Contains("could not parse soql"));
+
+        }
 
         #endregion
     }
